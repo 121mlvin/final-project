@@ -1,0 +1,24 @@
+{% extends 'main.html' %}
+
+{% block content %}
+  <h2>{{ form.instance.title|default:"Edit Task" }}</h2>
+
+  <form method="post" id="editTaskForm">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+
+    <div>
+      {% if task.status != 'New' %}
+        <button type="submit" name="direction" value="left"> < </button>
+      {% endif %}
+
+      <span style="display: inline-block; margin: 0 10px;">Status: {{ form.instance.status }}</span>
+      {% if task.status != 'Done' %}
+      <button type="submit" name="direction" value="right"> > </button>
+      {% endif %}
+    </div>
+
+    <button type="submit">Save</button>
+  </form>
+{% endblock %}

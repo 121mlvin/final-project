@@ -1,0 +1,10 @@
+{% extends 'main.html' %}
+
+{% block content %}
+  <h2>Edit Text</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.text }}
+    <button type="submit">Save Changes</button>
+  </form>
+{% endblock %}

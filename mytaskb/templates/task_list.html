@@ -1,0 +1,47 @@
+{% extends 'main.html' %}
+
+{% block content %}
+  <h2>My Tasks</h2>
+  <ul>
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% for task in tasks %}
+      <li>
+        <strong>{{ task.text }}</strong>
+        <p>creator: {{ task.creator }}</p>
+        <p>performer: {{ task.performer }}</p>
+        <p>status: {{ task.status }}
+          {% if user == task.performer %}
+            <form method="post" action="{% url 'change_status' task.id 'left' %}" style="display: inline;">
+                {% csrf_token %}
+                {% if task.status != 'New'%}
+                <button type="submit"> < </button>
+                {% endif %}
+            </form>
+            <form method="post" action="{% url 'change_status' task.id 'right' %}" style="display: inline;">
+                {% csrf_token %}
+                {% if task.status != 'Done' %}
+                <button type="submit"> > </button>
+                {% endif %}
+            </form>
+          {% endif %}
+          </p>
+        {% if user == task.creator %}
+          <a href="{% url 'edit_text' task.id %}">Edit Text</a>
+        {% endif %}
+
+        {% if user.is_superuser %}
+          <a href="{% url 'delete_task' task.id %}">Delete</a>
+        {% endif %}
+      </li>
+    {% empty %}
+      <li>No tasks found.</li>
+    {% endfor %}
+  </ul>
+  <a href="{% url 'create_task' %}">Add New Task</a>
+{% endblock %}
