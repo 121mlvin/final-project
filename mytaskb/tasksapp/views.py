@@ -1,15 +1,14 @@
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-from django.utils.decorators import method_decorator
-from django.views.generic import ListView, DeleteView
+from django.views.generic import ListView
 
 from .models import Task
 from .forms import TaskForm, ChangeStatus, ChangeText
 
 
-@method_decorator(login_required, name='dispatch')
-class TasksList(ListView):
+class TasksList(LoginRequiredMixin, ListView):
     model = Task
     template_name = 'task_list.html'
     context_object_name = 'tasks'
@@ -82,5 +81,3 @@ def delete_task(request, task_id):
     task = get_object_or_404(Task, id=task_id)
     task.delete()
     return redirect('task_list')
-
-

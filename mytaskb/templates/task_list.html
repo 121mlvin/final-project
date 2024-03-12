@@ -1,47 +1,48 @@
 {% extends 'main.html' %}
 
 {% block content %}
-  <h2>My Tasks</h2>
-  <ul>
-    {% if messages %}
-      <ul class="messages">
+  <h2 class="mt-3">My Tasks</h2>
+  {% if messages %}
+    <div class="alert alert-dismissible {% if messages.tags %}alert-{{ messages.tags }}{% endif %}">
+      <ul class="messages list-unstyled">
         {% for message in messages %}
-          <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+          <li>{{ message }}</li>
         {% endfor %}
       </ul>
-    {% endif %}
+    </div>
+  {% endif %}
+  <ul class="list-group mt-3">
     {% for task in tasks %}
-      <li>
-        <strong>{{ task.text }}</strong>
-        <p>creator: {{ task.creator }}</p>
-        <p>performer: {{ task.performer }}</p>
-        <p>status: {{ task.status }}
+      <li class="list-group-item">
+        <h5 class="mb-1">{{ task.text }}</h5>
+        <p class="mb-1">Creator: {{ task.creator }}</p>
+        <p class="mb-1">Performer: {{ task.performer }}</p>
+        <p class="mb-1">Status: {{ task.status }}
           {% if user == task.performer %}
-            <form method="post" action="{% url 'change_status' task.id 'left' %}" style="display: inline;">
+            <form method="post" action="{% url 'change_status' task.id 'left' %}" class="d-inline">
                 {% csrf_token %}
-                {% if task.status != 'New'%}
-                <button type="submit"> < </button>
+                {% if task.status != 'New' %}
+                  <button type="submit" class="btn btn-primary"> &lt; </button>
                 {% endif %}
             </form>
-            <form method="post" action="{% url 'change_status' task.id 'right' %}" style="display: inline;">
+            <form method="post" action="{% url 'change_status' task.id 'right' %}" class="d-inline">
                 {% csrf_token %}
                 {% if task.status != 'Done' %}
-                <button type="submit"> > </button>
+                  <button type="submit" class="btn btn-primary"> &gt; </button>
                 {% endif %}
             </form>
           {% endif %}
-          </p>
+        </p>
         {% if user == task.creator %}
-          <a href="{% url 'edit_text' task.id %}">Edit Text</a>
+          <a href="{% url 'edit_text' task.id %}" class="btn btn-warning btn-sm">Edit Text</a>
         {% endif %}
-
         {% if user.is_superuser %}
-          <a href="{% url 'delete_task' task.id %}">Delete</a>
+          <a href="{% url 'delete_task' task.id %}" class="btn btn-danger btn-sm">Delete</a>
         {% endif %}
       </li>
     {% empty %}
-      <li>No tasks found.</li>
+      <li class="list-group-item">No tasks found.</li>
     {% endfor %}
   </ul>
-  <a href="{% url 'create_task' %}">Add New Task</a>
+  <a href="{% url 'create_task' %}" class="btn btn-success mt-3">Add New Task</a>
 {% endblock %}
